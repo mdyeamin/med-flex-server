@@ -9,8 +9,7 @@ app.use(express.json());
 app.use(cors());
 //
 //
-const uri =
-  "mongodb+srv://medFlex:nJ8UUnukdHfgMNSP@cluster0.ls6ewug.mongodb.net/?appName=Cluster0";
+const uri = process.env.MONGO_URI;
 // Create a MongoClient with a MongoClientOptions object to set the Stable API version
 const client = new MongoClient(uri, {
   serverApi: {
@@ -19,9 +18,9 @@ const client = new MongoClient(uri, {
     deprecationErrors: true,
   },
 });
-app.get("/", (req, res) => {
-  res.send("Hello World!");
-});
+// app.get("/", (req, res) => {
+//   res.send("Hello World!");
+// });
 
 async function run() {
   try {
@@ -30,7 +29,15 @@ async function run() {
 
     const db = client.db("medFlex");
     const doctorCollection = db.collection("doctors");
+    // ********
+    app.get("/doctors", async (req, res) => {
+      const doctors = await doctorCollection.find().sort({ rating: -1 }).limit(3).toArray();
+      console.log(doctors);
+      res.send(doctors);
+      
+    });
 
+    // ********
     // Send a ping to confirm a successful connection
     await client.db("admin").command({ ping: 1 });
     console.log(
@@ -45,3 +52,4 @@ async function run() {
 app.listen(port, () => {
   console.log(`Example app listening on port ${port}`);
 });
+run().catch(console.dir);
