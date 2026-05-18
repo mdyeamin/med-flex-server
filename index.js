@@ -30,11 +30,32 @@ async function run() {
     const db = client.db("medFlex");
     const doctorCollection = db.collection("doctors");
     // ********
+
+    // get top 3 doctors by rating
     app.get("/doctors", async (req, res) => {
-      const doctors = await doctorCollection.find().sort({ rating: -1 }).limit(3).toArray();
-      console.log(doctors);
-      res.send(doctors);
-      
+      try {
+        const doctors = await doctorCollection
+          .find()
+          .sort({ rating: -1 })
+          .limit(3)
+          .toArray();
+        console.log(doctors);
+        res.send(doctors);
+      } catch (error) {
+        console.error("Error fetching doctors:", error);
+        res.status(500).send("Internal Server Error");
+      }
+    });
+    // all-appointments
+    app.get("/all-appointments", async (req, res) => {
+      try {
+        const doctors = await doctorCollection.find().toArray();
+        console.log(doctors);
+        res.send(doctors);
+      } catch (error) {
+        console.error("Error fetching all appointments:", error);
+        res.status(500).send("Internal Server Error");
+      }
     });
 
     // ********
