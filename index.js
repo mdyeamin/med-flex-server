@@ -1,7 +1,7 @@
 const express = require("express");
 const app = express();
 
-const { MongoClient, ServerApiVersion } = require("mongodb");
+const { MongoClient, ServerApiVersion, ObjectId } = require("mongodb");
 const port = process.env.PORT || 5000;
 const cors = require("cors");
 require("dotenv").config();
@@ -30,6 +30,10 @@ async function run() {
     const db = client.db("medFlex");
     const doctorCollection = db.collection("doctors");
     // ********
+    // test root /
+    app.get("/", (req, res) => {
+      res.send("Hello Yeamin! i'm database connected 🖕🏽 don't touch me!");
+    });
 
     // get top 3 doctors by rating
     app.get("/doctors", async (req, res) => {
@@ -39,7 +43,7 @@ async function run() {
           .sort({ rating: -1 })
           .limit(3)
           .toArray();
-        console.log(doctors);
+
         res.send(doctors);
       } catch (error) {
         console.error("Error fetching doctors:", error);
@@ -49,11 +53,27 @@ async function run() {
     // all-appointments
     app.get("/all-appointments", async (req, res) => {
       try {
-        const doctors = await doctorCollection.find().toArray();
-        console.log(doctors);
-        res.send(doctors);
+        const allDoctors = await doctorCollection.find().toArray();
+
+        res.send(allDoctors);
       } catch (error) {
         console.error("Error fetching all appointments:", error);
+        res.status(500).send("Internal Server Error");
+      }
+    });
+
+    // get a single data by id
+    app.get("/all-appointments/:id", async (req, res) => {
+      try{
+        const id = req.params.id;
+      const query = { _id: new ObjectId(id) };
+      const result = await doctorCollection.findOne(query);
+      console.log(result);
+      
+      res.send(result);
+      }
+      catch(error){
+        console.error("Error fetching appointment by ID:", error);
         res.status(500).send("Internal Server Error");
       }
     });
