@@ -69,7 +69,6 @@ async function run() {
         const id = req.params.id;
         const query = { _id: new ObjectId(id) };
         const result = await doctorCollection.findOne(query);
-      
 
         res.send(result);
       } catch (error) {
@@ -79,18 +78,28 @@ async function run() {
     });
 
     // _+_+_+_+_+_+_+_+_+_+_+_+_+_+_+_+ APPOINTMENTS API  _+_+_+_+_+_+_+_+_+_+_+_+_+_+_+_+
-// post appointment 
+    // post appointment
     app.post("/appointments", async (req, res) => {
       const appointment = req.body;
       console.log("new appointment inserted", appointment);
       const result = await appointmentCollection.insertOne(appointment);
       res.send("result");
     });
-// get appointments
-app.get('/appointments',async(req,res)=>{
-const data = await appointmentCollection.find().toArray();
-res.send(data);
-})
+    // get appointments
+    app.get("/appointments", async (req, res) => {
+      const data = await appointmentCollection.find().toArray();
+      res.send(data);
+    });
+
+
+    // delete an appointment
+    app.delete('/appointment/:id',async(req,res)=>{
+      const id = req.params.id;
+      const query = {_id: new ObjectId(id)}
+      const result = await appointmentCollection.deleteOne(query);
+      res.send(result);
+    })
+
 
     // ********
     // Send a ping to confirm a successful connection
