@@ -91,15 +91,37 @@ async function run() {
       res.send(data);
     });
 
-
     // delete an appointment
-    app.delete('/appointment/:id',async(req,res)=>{
+    app.delete("/appointments/:id", async (req, res) => {
       const id = req.params.id;
-      const query = {_id: new ObjectId(id)}
+      const query = { _id: new ObjectId(id) };
       const result = await appointmentCollection.deleteOne(query);
-      res.send(result);
-    })
+      console.log("after delete from api", result);
 
+      res.send(result);
+    });
+
+    // update an appointment
+    app.patch("/appointments/:id", async (req, res) => {
+      const id = req.params.id;
+      const filter = { _id: new ObjectId(id) };
+
+      const appointmentInfo = req.body;
+console.log("appointment info from api", appointmentInfo);
+      const updateAppointment = {
+        $set: {
+          ...appointmentInfo,
+        },
+      };
+
+      const result = await appointmentCollection.updateOne(
+        filter,
+        updateAppointment,
+      );
+      console.log("after update from api", result);
+
+      res.send(result);
+    });
 
     // ********
     // Send a ping to confirm a successful connection
