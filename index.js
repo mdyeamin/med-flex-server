@@ -29,6 +29,7 @@ async function run() {
 
     const db = client.db("medFlex");
     const doctorCollection = db.collection("doctors");
+    const appointmentCollection = db.collection("appointments");
     // ********
     // test root /
     app.get("/", (req, res) => {
@@ -64,19 +65,32 @@ async function run() {
 
     // get a single data by id
     app.get("/all-appointments/:id", async (req, res) => {
-      try{
+      try {
         const id = req.params.id;
-      const query = { _id: new ObjectId(id) };
-      const result = await doctorCollection.findOne(query);
-      console.log(result);
+        const query = { _id: new ObjectId(id) };
+        const result = await doctorCollection.findOne(query);
       
-      res.send(result);
-      }
-      catch(error){
+
+        res.send(result);
+      } catch (error) {
         console.error("Error fetching appointment by ID:", error);
         res.status(500).send("Internal Server Error");
       }
     });
+
+    // _+_+_+_+_+_+_+_+_+_+_+_+_+_+_+_+ APPOINTMENTS API  _+_+_+_+_+_+_+_+_+_+_+_+_+_+_+_+
+// post appointment 
+    app.post("/appointments", async (req, res) => {
+      const appointment = req.body;
+      console.log("new appointment inserted", appointment);
+      const result = await appointmentCollection.insertOne(appointment);
+      res.send("result");
+    });
+// get appointments
+app.get('/appointments',async(req,res)=>{
+const data = await appointmentCollection.find().toArray();
+res.send(data);
+})
 
     // ********
     // Send a ping to confirm a successful connection
