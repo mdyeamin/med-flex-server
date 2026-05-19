@@ -85,13 +85,16 @@ async function run() {
       const result = await appointmentCollection.insertOne(appointment);
       res.send("result");
     });
-    // get appointments
-    app.get("/appointments", async (req, res) => {
-      const data = await appointmentCollection.find().toArray();
+    // get booked appointments
+    app.get("/appointments/:userId", async (req, res) => {
+      const userId = req.params.userId;
+      const query = { userId: userId };
+
+      const data = await appointmentCollection.find(query).toArray();
       res.send(data);
     });
 
-    // delete an appointment
+    // delete an booked appointment
     app.delete("/appointments/:id", async (req, res) => {
       const id = req.params.id;
       const query = { _id: new ObjectId(id) };
@@ -107,7 +110,7 @@ async function run() {
       const filter = { _id: new ObjectId(id) };
 
       const appointmentInfo = req.body;
-console.log("appointment info from api", appointmentInfo);
+      console.log("appointment info from api", appointmentInfo);
       const updateAppointment = {
         $set: {
           ...appointmentInfo,
