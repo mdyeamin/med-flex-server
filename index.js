@@ -23,7 +23,7 @@ const client = new MongoClient(uri, {
 //   res.send("Hello World!");
 // });
 // key set
-const JWKS = createRemoteJWKSet(new URL(`http://localhost:3000/api/auth/jwks`));
+const JWKS = createRemoteJWKSet(new URL(`${process.env.CLIENT_URL}/api/auth/jwks`));
 
 // middleware
 const verifyToken = async (req, res, next) => {
@@ -49,7 +49,7 @@ const verifyToken = async (req, res, next) => {
 async function run() {
   try {
     // Connect the client to the server	(optional starting in v4.7)
-    await client.connect();
+    // await client.connect();
 
     const db = client.db("medFlex");
     const doctorCollection = db.collection("doctors");
@@ -58,7 +58,7 @@ async function run() {
 
     // test root /
     app.get("/", (req, res) => {
-      res.send("Hello Yeamin! i'm database connected 🖕🏽 don't touch me!");
+      res.send("Hello Yeamin! i'm database connected it's working perfectly 🖕🏽 don't touch me!");
     });
 
     // get top 3 doctors by rating
@@ -153,7 +153,7 @@ async function run() {
 
     // ********
     // Send a ping to confirm a successful connection
-    await client.db("admin").command({ ping: 1 });
+    // await client.db("admin").command({ ping: 1 });
     console.log(
       "Pinged your deployment. You successfully connected to MongoDB!",
     );
