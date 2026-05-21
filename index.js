@@ -111,7 +111,7 @@ async function run() {
       res.send("result");
     });
     // get booked appointments
-    app.get("/appointments/:userId", async (req, res) => {
+    app.get("/appointments/:userId",verifyToken, async (req, res) => {
       const userId = req.params.userId;
       const query = { userId: userId };
 
