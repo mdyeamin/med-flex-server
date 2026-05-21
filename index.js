@@ -130,7 +130,7 @@ async function run() {
     });
 
     // update an appointment
-    app.patch("/appointments/:id", async (req, res) => {
+    app.patch("/appointments/:id",verifyToken, async (req, res) => {
       const id = req.params.id;
       const filter = { _id: new ObjectId(id) };
 
