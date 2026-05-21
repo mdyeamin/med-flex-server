@@ -23,7 +23,9 @@ const client = new MongoClient(uri, {
 //   res.send("Hello World!");
 // });
 // key set
-const JWKS = createRemoteJWKSet(new URL(`${process.env.CLIENT_URL}/api/auth/jwks`));
+const JWKS = createRemoteJWKSet(
+  new URL(`${process.env.CLIENT_URL}/api/auth/jwks`),
+);
 
 // middleware
 const verifyToken = async (req, res, next) => {
@@ -58,7 +60,9 @@ async function run() {
 
     // test root /
     app.get("/", (req, res) => {
-      res.send("Hello Yeamin! i'm database connected it's working perfectly 🖕🏽 don't touch me!");
+      res.send(
+        "Hello Yeamin! i'm database connected it's working perfectly 🖕🏽 don't touch me!",
+      );
     });
 
     // get top 3 doctors by rating
@@ -79,7 +83,13 @@ async function run() {
     // all-appointments
     app.get("/all-appointments", async (req, res) => {
       try {
-        const allDoctors = await doctorCollection.find().toArray();
+        const searchText = req.query.search || "";
+
+        const query={
+        name:{$regex:searchText,$options:'i'}
+        }
+
+        const allDoctors = await doctorCollection.find(query).toArray();
 
         res.send(allDoctors);
       } catch (error) {
@@ -104,14 +114,14 @@ async function run() {
 
     // _+_+_+_+_+_+_+_+_+_+_+_+_+_+_+_+ APPOINTMENTS API  _+_+_+_+_+_+_+_+_+_+_+_+_+_+_+_+
     // post appointment
-    app.post("/appointments", verifyToken,async (req, res) => {
+    app.post("/appointments", verifyToken, async (req, res) => {
       const appointment = req.body;
       console.log("new appointment inserted", appointment);
       const result = await appointmentCollection.insertOne(appointment);
       res.send("result");
     });
     // get booked appointments
-    app.get("/appointments/:userId",verifyToken, async (req, res) => {
+    app.get("/appointments/:userId", verifyToken, async (req, res) => {
       const userId = req.params.userId;
       const query = { userId: userId };
 
@@ -120,7 +130,7 @@ async function run() {
     });
 
     // delete an booked appointment
-    app.delete("/appointments/:id",verifyToken, async (req, res) => {
+    app.delete("/appointments/:id", verifyToken, async (req, res) => {
       const id = req.params.id;
       const query = { _id: new ObjectId(id) };
       const result = await appointmentCollection.deleteOne(query);
@@ -130,7 +140,7 @@ async function run() {
     });
 
     // update an appointment
-    app.patch("/appointments/:id",verifyToken, async (req, res) => {
+    app.patch("/appointments/:id", verifyToken, async (req, res) => {
       const id = req.params.id;
       const filter = { _id: new ObjectId(id) };
 
