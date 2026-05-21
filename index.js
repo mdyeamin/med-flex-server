@@ -120,7 +120,7 @@ async function run() {
     });
 
     // delete an booked appointment
-    app.delete("/appointments/:id", async (req, res) => {
+    app.delete("/appointments/:id",verifyToken, async (req, res) => {
       const id = req.params.id;
       const query = { _id: new ObjectId(id) };
       const result = await appointmentCollection.deleteOne(query);
