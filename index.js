@@ -104,7 +104,7 @@ async function run() {
 
     // _+_+_+_+_+_+_+_+_+_+_+_+_+_+_+_+ APPOINTMENTS API  _+_+_+_+_+_+_+_+_+_+_+_+_+_+_+_+
     // post appointment
-    app.post("/appointments", async (req, res) => {
+    app.post("/appointments", verifyToken,async (req, res) => {
       const appointment = req.body;
       console.log("new appointment inserted", appointment);
       const result = await appointmentCollection.insertOne(appointment);
